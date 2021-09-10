@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Registration</title>
+    <script src='node_modules/web3/dist/web3.min.js'></script>
+</head>
+<body>
+    Doctor Registration Webpage <br>
+    Enter the Doctor id
+    <input type="text" id="docid">
+    <br>
+    Enter the Doctor name
+    <input type="text" id="docname">
+    <button type="submit" id="b" onclick="setDoctorData();">Submit</button>
+    <br>
+	Search doctor with id
+	<input type="text" id="docsearch">
+	<button type="submit" id="c" onclick="printData();">View doctor data</button>
+	<br>
+	Status: <span id="status">Loading...</span>
+	<br>
+    <script type="text/javascript">
+        async function loadWeb3() {
+            if (window.ethereum) {
+                window.web3 = new Web3(window.ethereum);
+                window.ethereum.enable();
+            }
+        }
+
+        async function loadContract() {
+            return await new window.web3.eth.Contract([
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "DOCTOR",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "doctor_id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "doctor_name",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			}
+		],
+		"name": "add_doctor",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_id",
+				"type": "uint256"
+			}
+		],
+		"name": "get_doctor_data",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "doctor_id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "doctor_name",
+						"type": "string"
+					}
+				],
+				"internalType": "struct doctorContract.doctor",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+], '0x0e915E10E94c02F7F276c8519fB8f3b7f2f4cE6d');
+        }
+
+        async function printData() {
+            updateStatus('fetching Doctor data');
+            const value_search = document.getElementById("docsearch").value;
+            const coolNumber1 = await window.contract.methods.get_doctor_data(value_search).call();
+            updateStatus(`Doctor ID: ${coolNumber1[0]} Doctor Name: ${coolNumber1[1]}`);
+        }
+
+        async function getCurrentAccount() {
+            const accounts = await window.web3.eth.getAccounts();
+            return accounts[0];r
+        }
+        
+        async function setDoctorData() {
+            
+            const value_id = document.getElementById("docid").value;
+            const value_name = document.getElementById("docname").value;
+            updateStatus(`Registering Doctor...`);
+            const account = await getCurrentAccount();
+            await window.contract.methods.add_doctor(value_id, value_name).send({ from: account });
+            updateStatus('Updated.');
+        }
+
+        async function load() {
+            await loadWeb3();
+            window.contract = await loadContract();
+            updateStatus('Ready!');
+        }
+
+        function updateStatus(status) {
+            const statusEl = document.getElementById('status');
+            statusEl.innerHTML = status;
+            console.log(status);
+        }
+
+        load();
+    </script>
+</body>
+</html>

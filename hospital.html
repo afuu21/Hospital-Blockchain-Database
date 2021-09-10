@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Registration</title>
+	<script src='node_modules/web3/dist/web3.min.js'></script>
+</head>
+<body>
+    Hospital Registration Webpage <br>
+    Enter the hospital id
+    <input type="text" id="hospid">
+    <br>
+	Enter the hospital name
+	<input type="text" id="hospname">
+	<button type="submit" id="b" onclick="setHospitalData();">Submit</button>
+	<br>
+	Search hospital with id
+	<input type="text" id="hospsearch">
+	<button type="submit" id="c" onclick="printData();">View Hospital data</button>
+	<br>
+	Status: <span id="status">Loading...</span>
+	<br>
+    <script type="text/javascript">
+        async function loadWeb3() {
+            if (window.ethereum) {
+                window.web3 = new Web3(window.ethereum);
+                window.ethereum.enable();
+            }
+        }
+
+        async function loadContract() {
+            return await new window.web3.eth.Contract([
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "HOSPITAL",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "hospital_id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "hospital_name",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			}
+		],
+		"name": "add_hospital",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_id",
+				"type": "uint256"
+			}
+		],
+		"name": "get_hospital_data",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "hospital_id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "hospital_name",
+						"type": "string"
+					}
+				],
+				"internalType": "struct hospitalContract.hospital",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+], '0x26010413D06B5c1ef0DfdbE916eC6b9A0c6fC831');
+        }
+
+        async function printData() {
+            updateStatus('fetching Hospital Data');
+			const value_search = document.getElementById("hospsearch").value;
+            const coolNumber1 = await window.contract.methods.get_hospital_data(value_search).call();
+            updateStatus(`Hospital ID: ${coolNumber1[0]} Hospital Name: ${coolNumber1[1]}`);
+        }
+
+        async function getCurrentAccount() {
+            const accounts = await window.web3.eth.getAccounts();
+            return accounts[0];r
+        }
+        
+        async function setHospitalData() {
+            const value_id = document.getElementById("hospid").value;
+			const value_name = document.getElementById("hospname").value;
+            updateStatus(`Registering Hospital...`);
+            const account = await getCurrentAccount();
+            await window.contract.methods.add_hospital(value_id, value_name).send({ from: account });
+            updateStatus('Updated.');
+        }
+
+
+        async function load() {
+            await loadWeb3();
+            window.contract = await loadContract();
+            updateStatus('Ready!');
+        }
+
+        function updateStatus(status) {
+            const statusEl = document.getElementById('status');
+            statusEl.innerHTML = status;
+            console.log(status);
+        }
+
+        load();
+    </script>
+</body>
+</html>

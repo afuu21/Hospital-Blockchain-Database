@@ -14,6 +14,6 @@ contract doctorContract {
     
     function get_doctor_data(uint _id) public view returns (doctor memory) {
         return DOCTOR[_id];
-    }  
+    } 
     
 }

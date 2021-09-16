@@ -9,18 +9,19 @@
 </head>
 <body>
     Hospital Registration Webpage <br>
-    Enter the hospital id
+    Enter the hospital id:<br>
     <input type="text" id="hospid">
     <br>
-	Enter the hospital name
+	Enter the hospital name:<br>
 	<input type="text" id="hospname">
 	<button type="submit" id="b" onclick="setHospitalData();">Submit</button>
 	<br>
-	Search hospital with id
+	Search hospital with id<br>
 	<input type="text" id="hospsearch">
 	<button type="submit" id="c" onclick="printData();">View Hospital data</button>
 	<br>
 	Status: <span id="status">Loading...</span>
+
 	<br>
     <script type="text/javascript">
         async function loadWeb3() {
@@ -112,7 +113,8 @@
             updateStatus('fetching Hospital Data');
 			const value_search = document.getElementById("hospsearch").value;
             const coolNumber1 = await window.contract.methods.get_hospital_data(value_search).call();
-            updateStatus(`Hospital ID: ${coolNumber1[0]} Hospital Name: ${coolNumber1[1]}`);
+			updateStatus(`Hospital ID: ${coolNumber1[0]} Hospital Name: ${coolNumber1[1]}
+			`);
         }
 
         async function getCurrentAccount() {

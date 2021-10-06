@@ -5,7 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hospital Registration</title>
-	<script src='node_modules/web3/dist/web3.min.js'></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.6.0/web3.min.js"></script>
+
+
 </head>
 <body>
     Hospital Registration Webpage <br>
@@ -119,7 +121,7 @@
 
         async function getCurrentAccount() {
             const accounts = await window.web3.eth.getAccounts();
-            return accounts[0];r
+            return accounts;r
         }
         
         async function setHospitalData() {
@@ -127,7 +129,7 @@
 			const value_name = document.getElementById("hospname").value;
             updateStatus(`Registering Hospital...`);
             const account = await getCurrentAccount();
-            await window.contract.methods.add_hospital(value_id, value_name).send({ from: account });
+            await window.contract.methods.add_hospital(value_id, value_name).send({ from: '0xA85532295E92e63179b769846cFb8fc7832Ac770' });
             updateStatus('Updated.');
         }
 

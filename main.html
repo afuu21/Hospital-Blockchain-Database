@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset='utf-8'>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Title</title>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Hospital Management</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <script src='node_modules/web3/dist/web3.min.js'></script>
-</head>
-<h1>Hospital Management</h1>
-<body>
-    
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@0.18.2/dist/web3.min.js"></script>
+  </head>
+
+  <body>
     <br >
     <a href="hospital.html"><button type="submit" >Hospital Database</button></a>
     <a href="doctor.html"><button type="submit" >Doctor Database</button></a>
@@ -27,7 +27,7 @@
         }
 
         async function loadContract() {
-            return await new window.web3.eth.Contract([
+            return await new window.web3.eth.contract([
 	{
 		"inputs": [],
 		"name": "coolNumber",
@@ -112,6 +112,41 @@
 
         load();
     </script>
-</body>
 
-</html>
+    <p><h1>Upload image</h1></p>
+    <div class="container">
+      <div class="row">
+        <h2>Select a file to upload</h2>
+        <p>
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+              {% for message in messages %}
+              <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+        </p>
+        {% if filename %}
+        <div style="padding:20px;">
+          <img src="{{ url_for('display_image',filename=filename) }}">
+        </div>
+        {% endif %}
+          <form method="POST" action="/" enctype="multipart/form-data">
+            <d1>
+              <p>
+                <input type="file" name="file" class="form-control" autocomplete="off" required>
+              </p>
+            </d1>
+            <p>
+              Enter your age range among: (0-2), (4-6), (8-12), (15-20), (25-32), (38-43), (48-53), (60-100)
+              <br>
+              <input name="u">
+              <input type="submit" value="Submit" class="btn btn-info">
+            </p>
+          </form>
+      </div>
+    </div>
+  </body>
+  </html>
